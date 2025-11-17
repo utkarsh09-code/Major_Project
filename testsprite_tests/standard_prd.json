@@ -1,0 +1,828 @@
+{
+  "meta": {
+    "project": "Real-time User Attentiveness Detection System",
+    "date": "2025-07-30",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "A comprehensive desktop application designed for real-time detection and quantification of user attentiveness during video playback by leveraging multi-modal non-verbal cues including face detection, gaze estimation, head pose analysis, and behavioral patterns.",
+  "core_goals": [
+    "Provide reliable and accurate real-time detection of user attentiveness using multiple facial and behavioral cues.",
+    "Support multiple backend detection engines for robustness and fallback capabilities.",
+    "Ensure user privacy with data anonymization and minimal permission requirements.",
+    "Offer both command-line and graphical user interfaces for diverse user needs.",
+    "Enable extensibility and configurability through modular design and flexible system settings."
+  ],
+  "key_features": [
+    "Multi-backend Face Detection support using MediaPipe, OpenCV, and fallback mechanisms with tracking capabilities.",
+    "Eye Gaze Estimation using MediaPipe face mesh for accurate gaze direction tracking.",
+    "Head Pose Estimation capturing pitch, yaw, and roll measurements in real-time.",
+    "Behavioral Cues Detection detecting blinks, yawns, and movement patterns to enrich attentiveness understanding.",
+    "Comprehensive Attention Scoring system calculating quantifiable attention levels and managing session metrics.",
+    "Multimodal Fusion integrating gaze, pose, and behavioral cues with configurable fusion strategies for improved accuracy.",
+    "Real-time Video Capture and Processing utilities with camera initialization and configuration management.",
+    "PySide6-based GUI for real-time monitoring including permission handling and user-friendly controls.",
+    "System-wide Configuration Management for camera, model, and privacy settings to tailor system behavior.",
+    "Robust Logging System supporting detailed event, error tracking, and context capturing.",
+    "Privacy Management ensuring data anonymization with adjustable anonymization levels for compliance and trust."
+  ],
+  "user_flow_summary": [
+    "User launches the application via GUI or CLI and initializes camera capture with desired settings.",
+    "The system captures video frames in real-time and performs multi-backend face detection to identify face regions reliably.",
+    "Upon successful detection, the system processes gaze estimation and head pose analysis using MediaPipe face mesh landmarks.",
+    "Behavioral cues such as blinking, yawning, and movement patterns are detected continuously from the video stream.",
+    "Collected data from detection modules are fused using selected fusion strategy to produce a unified attention metric.",
+    "The Attention Scoring module computes attention scores, categorizes attention levels, and tracks session metrics for real-time feedback.",
+    "Users can view attentiveness metrics and control monitoring via the GUI or command line options, including starting/stopping sessions and saving screenshots.",
+    "Privacy management ensures any sensitive data is anonymized according to user settings before storage or transmission.",
+    "System logs events and errors comprehensively for monitoring, debugging, and auditing purposes.",
+    "At session end, users can retrieve summary reports detailing average attention scores, distribution, and focus duration."
+  ],
+  "validation_criteria": [
+    "Face detection accuracy meets or exceeds predefined confidence thresholds with fallback mechanisms operational.",
+    "Gaze and head pose estimations produce consistent, reliable measurements demonstrated during live and recorded tests.",
+    "Behavioral cues detection correctly identifies blinks, yawns, and movement with high sensitivity and specificity.",
+    "Attention scoring correlates with ground truth attentiveness annotations in controlled evaluations.",
+    "Multimodal fusion strategies improve overall detection accuracy compared to single modality baselines.",
+    "Real-time video capture meets performance targets for frame rate and latency under typical hardware conditions.",
+    "GUI components respond correctly to user inputs, display real-time results, and handle error states gracefully.",
+    "Configuration changes reflect immediately in system operation without requiring restarts unless specified.",
+    "Logging system records events at appropriate levels with contextual information and does not degrade system performance.",
+    "Privacy management effectively anonymizes data with configurable levels and maintains user trust and compliance standards."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "Python",
+      "OpenCV",
+      "MediaPipe",
+      "PyTorch",
+      "PySide6",
+      "NumPy",
+      "SciPy",
+      "scikit-learn",
+      "Matplotlib",
+      "Seaborn"
+    ],
+    "features": [
+      {
+        "name": "Face Detection API",
+        "description": "Multi-backend face detection using MediaPipe, DeepFace, OpenCV, and dlib with tracking capabilities",
+        "files": [
+          "src/core/face_detection.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Face Detection API",
+            "description": "Multi-backend face detection with tracking capabilities",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/detect_faces": {
+              "post": {
+                "summary": "Detect faces in frame",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "frame": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "backend": {
+                            "type": "string",
+                            "enum": [
+                              "mediapipe",
+                              "deepface",
+                              "opencv",
+                              "dlib"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Face detection results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "bbox": {
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              },
+                              "confidence": {
+                                "type": "number"
+                              },
+                              "landmarks": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Gaze Estimation API",
+        "description": "Eye gaze tracking and estimation using MediaPipe face mesh",
+        "files": [
+          "src/core/gaze_estimation.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Gaze Estimation API",
+            "description": "Eye gaze tracking and estimation",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/estimate_gaze": {
+              "post": {
+                "summary": "Estimate gaze direction",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "frame": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "face_landmarks": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Gaze estimation results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "gaze_direction": {
+                              "type": "array",
+                              "items": {
+                                "type": "number"
+                              }
+                            },
+                            "confidence": {
+                              "type": "number"
+                            },
+                            "eye_landmarks": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Pose Estimation API",
+        "description": "Head pose estimation (pitch, yaw, roll) using MediaPipe face mesh",
+        "files": [
+          "src/core/pose_estimation.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Pose Estimation API",
+            "description": "Head pose estimation",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/estimate_pose": {
+              "post": {
+                "summary": "Estimate head pose",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "frame": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "face_landmarks": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Pose estimation results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "pitch": {
+                              "type": "number"
+                            },
+                            "yaw": {
+                              "type": "number"
+                            },
+                            "roll": {
+                              "type": "number"
+                            },
+                            "confidence": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Behavioral Cues API",
+        "description": "Detection of behavioral cues like blinking, yawning, and movement patterns",
+        "files": [
+          "src/core/behavioral_cues.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Behavioral Cues API",
+            "description": "Behavioral cues detection",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/detect_behavioral_cues": {
+              "post": {
+                "summary": "Detect behavioral cues",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "frame": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "face_landmarks": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Behavioral cues results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "blink_rate": {
+                              "type": "number"
+                            },
+                            "yawn_detected": {
+                              "type": "boolean"
+                            },
+                            "movement_score": {
+                              "type": "number"
+                            },
+                            "confidence": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Attentiveness Scoring API",
+        "description": "Comprehensive attention score calculation and session management",
+        "files": [
+          "src/core/attentiveness_scoring.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Attentiveness Scoring API",
+            "description": "Attention score calculation and session management",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/calculate_attention_score": {
+              "post": {
+                "summary": "Calculate attention score",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "gaze_result": {
+                            "type": "object"
+                          },
+                          "pose_result": {
+                            "type": "object"
+                          },
+                          "behavioral_result": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Attention scoring results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "attention_score": {
+                              "type": "number"
+                            },
+                            "attention_level": {
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "type": "number"
+                            },
+                            "session_metrics": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "/get_session_summary": {
+              "get": {
+                "summary": "Get session summary",
+                "responses": {
+                  "200": {
+                    "description": "Session summary",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "avg_attention_score": {
+                              "type": "number"
+                            },
+                            "attention_distribution": {
+                              "type": "object"
+                            },
+                            "total_duration": {
+                              "type": "number"
+                            },
+                            "focus_percentage": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Multimodal Fusion API",
+        "description": "Fusion of multiple detection modalities for improved accuracy",
+        "files": [
+          "src/core/multimodal_fusion.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Multimodal Fusion API",
+            "description": "Fusion of multiple detection modalities",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/fuse_modalities": {
+              "post": {
+                "summary": "Fuse multiple modalities",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "gaze_result": {
+                            "type": "object"
+                          },
+                          "pose_result": {
+                            "type": "object"
+                          },
+                          "behavioral_result": {
+                            "type": "object"
+                          },
+                          "fusion_strategy": {
+                            "type": "string",
+                            "enum": [
+                              "weighted_sum",
+                              "attention",
+                              "ensemble"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Fusion results",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "fused_score": {
+                              "type": "number"
+                            },
+                            "confidence": {
+                              "type": "number"
+                            },
+                            "modality_weights": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Video Capture API",
+        "description": "Real-time video capture and processing utilities",
+        "files": [
+          "src/core/video_capture.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Video Capture API",
+            "description": "Real-time video capture and processing",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/initialize_camera": {
+              "post": {
+                "summary": "Initialize camera capture",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "camera_index": {
+                            "type": "integer"
+                          },
+                          "width": {
+                            "type": "integer"
+                          },
+                          "height": {
+                            "type": "integer"
+                          },
+                          "fps": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Camera initialization result",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean"
+                            },
+                            "camera_info": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "GUI Application",
+        "description": "PySide6-based GUI application for real-time monitoring",
+        "files": [
+          "gui.py",
+          "src/gui/main_window.py",
+          "src/gui/camera_widget.py",
+          "src/gui/permission_handler.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "GUI Application",
+            "description": "PySide6-based GUI for real-time monitoring",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/start_monitoring": {
+              "post": {
+                "summary": "Start real-time monitoring",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "camera_index": {
+                            "type": "integer"
+                          },
+                          "resolution": {
+                            "type": "object"
+                          },
+                          "backend": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Monitoring started",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean"
+                            },
+                            "session_id": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Configuration Management",
+        "description": "System configuration and settings management",
+        "files": [
+          "src/utils/config.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Configuration Management",
+            "description": "System configuration and settings",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/get_config": {
+              "get": {
+                "summary": "Get system configuration",
+                "responses": {
+                  "200": {
+                    "description": "Configuration data",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "camera_settings": {
+                              "type": "object"
+                            },
+                            "model_settings": {
+                              "type": "object"
+                            },
+                            "privacy_settings": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Logging System",
+        "description": "Comprehensive logging and error tracking",
+        "files": [
+          "src/utils/logger.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Logging System",
+            "description": "Comprehensive logging and error tracking",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/log_event": {
+              "post": {
+                "summary": "Log system event",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "level": {
+                            "type": "string",
+                            "enum": [
+                              "DEBUG",
+                              "INFO",
+                              "WARNING",
+                              "ERROR"
+                            ]
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "context": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Log entry created",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean"
+                            },
+                            "log_id": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Privacy Management",
+        "description": "Privacy protection and data anonymization utilities",
+        "files": [
+          "src/utils/privacy.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Privacy Management",
+            "description": "Privacy protection and data anonymization",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/anonymize_data": {
+              "post": {
+                "summary": "Anonymize sensitive data",
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object"
+                          },
+                          "anonymization_level": {
+                            "type": "string",
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Anonymized data",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "anonymized_data": {
+                              "type": "object"
+                            },
+                            "privacy_score": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "test_face_detection_with_various_backends",
+    "description": "Verify that the /detect_faces endpoint correctly detects faces using all supported backends (mediapipe, deepface, opencv, dlib) and returns bounding boxes, confidence scores, and landmarks."
+  },
+  {
+    "id": "TC002",
+    "title": "test_gaze_estimation_accuracy_and_response",
+    "description": "Test the /estimate_gaze endpoint to ensure it accurately estimates gaze direction from given frames and face landmarks, returning gaze direction vectors, confidence, and eye landmarks."
+  },
+  {
+    "id": "TC003",
+    "title": "test_head_pose_estimation_results_consistency",
+    "description": "Validate the /estimate_pose endpoint for correct head pose estimation (pitch, yaw, roll) with confidence scores based on input frames and face landmarks."
+  },
+  {
+    "id": "TC004",
+    "title": "test_behavioral_cues_detection_functionality",
+    "description": "Check the /detect_behavioral_cues endpoint to confirm it detects blinking rate, yawning, movement scores, and confidence accurately from video frames and face landmarks."
+  },
+  {
+    "id": "TC005",
+    "title": "test_attention_score_calculation_and_session_metrics",
+    "description": "Ensure the /calculate_attention_score endpoint correctly computes attention scores, levels, confidence, and session metrics from gaze, pose, and behavioral detection results."
+  },
+  {
+    "id": "TC006",
+    "title": "test_session_summary_retrieval",
+    "description": "Test the /get_session_summary endpoint to verify it returns accurate session summary data including average attention score, attention distribution, total duration, and focus percentage."
+  },
+  {
+    "id": "TC007",
+    "title": "test_multimodal_fusion_with_different_strategies",
+    "description": "Validate the /fuse_modalities endpoint to ensure it correctly fuses gaze, pose, and behavioral results using different fusion strategies (weighted_sum, attention, ensemble) and returns fused scores with confidence and modality weights."
+  },
+  {
+    "id": "TC008",
+    "title": "test_camera_initialization_with_varied_parameters",
+    "description": "Verify the /initialize_camera endpoint initializes the camera correctly with different camera indices, resolutions, and frame rates, returning success status and camera information."
+  },
+  {
+    "id": "TC009",
+    "title": "test_start_monitoring_api_functionality",
+    "description": "Test the /start_monitoring endpoint to confirm it starts real-time monitoring sessions with specified camera index, resolution, and backend, returning success status and session ID."
+  },
+  {
+    "id": "TC010",
+    "title": "test_privacy_data_anonymization_levels",
+    "description": "Check the /anonymize_data endpoint to ensure it anonymizes sensitive data correctly according to specified anonymization levels (low, medium, high) and returns anonymized data with a privacy score."
+  }
+]
